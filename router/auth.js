@@ -11,12 +11,12 @@ const User=require("../model/userSchema");
 
 
 
-
+/*
 router.get('/',(req,res)=>
 {
     res.send("hello world from the server router js");
 });
-
+*/
 /*
 router.post('/register', (req,res)=>{
 
