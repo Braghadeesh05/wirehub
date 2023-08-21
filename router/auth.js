@@ -8,14 +8,10 @@ router.use(cookieParser());
 
 require('../db/conn');
 const User=require("../model/userSchema");
+const User3=require("../model/userSchema3");
 
 
 
-
-router.get('/',(req,res)=>
-{
-    res.send("hello world from the server router js");
-});
 
 /*
 router.post('/register', (req,res)=>{
@@ -150,9 +146,9 @@ router.get('/getdata', authenticate,(req,res)=>{
 router.post('/contact',authenticate,async (req,res)=>
 {
     try{
-        const {name,email,phone,message}=req.body;
+        const {name,email, phone, message}=req.body;
 
-        if(!name || !email|| !phone|| !message){
+        if(!message){
             console.log('error in contact form');
             return res.json({error: "plzz filled the contact form"});
         }
@@ -165,7 +161,7 @@ router.post('/contact',authenticate,async (req,res)=>
             await userContact.save();
             console.log("saved successfully");
             res.status(201).json({message:"user Contact successfully"});
-            console.log("message received successfully");
+            console.log("message received successfully")
         }
     }
     catch(err)
@@ -173,6 +169,29 @@ router.post('/contact',authenticate,async (req,res)=>
         console.log(err);
     }
 });
+
+//to get all data with images
+router.get('/product/images', (req, res) => {
+    User3.find()
+      .sort('-created')
+      .then((images) => {
+        res.json(images);
+      })
+      .catch((err) => {
+        res.status(500).json({ success: false, error: err.message });
+      });
+  });
+  
+  // handle GET request for all Products
+  router.get('/products', (req, res) => {
+    User3.find((err, users) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.send(users);
+      }
+    });
+  });
 
 router.get('/logout', (req,res)=>
 {
@@ -182,6 +201,15 @@ router.get('/logout', (req,res)=>
 });
 
 
+// Get an product by ID (dynamic pages)
+router.get('/api/dynamicproduct/:id', async (req, res) => {
+    try {
+      const prodcut = await User3.findById(req.params.id);
+      res.json(prodcut);
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to fetch employee details' });
+    }
+  });
 
 
 module.exports=router;
